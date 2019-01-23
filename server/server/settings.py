@@ -163,7 +163,7 @@ LOGGING = {
         #     'propagate': False,
         # },
         'django.request': {
-            'handlers': ['file', 'sentry'],
+            'handlers': ['file'],
             'level': 'DEBUG',  # change debug level as appropiate
             'propagate': False,
         },
