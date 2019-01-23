@@ -47,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'request_logging.middleware.LoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -114,7 +115,78 @@ USE_L10N = True
 USE_TZ = True
 
 
+LOGGING = {
+    'version': 1,  # 日志版本
+    'disable_existing_loggers': False,  # True：disable原有日志相关配置
+    'formatters': {  # 日志格式
+        'verbose': {  # 详细格式
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {  # 简单格式
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'filters': {  # 日志过滤器
+        'require_debug_true': {  # 是否支持DEBUG级别日志过滤
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {  # 日志handlers
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'file': {  # 文件handler
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/verbose.log',
+            # 'when': config.get('logging', 'when'),
+            # 'interval': config.getint('logging', 'interval'),
+            # 'backupCount': config.getint('logging', 'backup_count'),
+            'formatter': 'verbose'
+        },
+        'console': {  # 控制器handler，INFO级别以上的日志都要Simple格式输出到控制台
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'sentry': {
+            'level': 'WARNING',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler'
+        },
+        'debug-info': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/info.log',
+            'formatter': 'verbose',
+        }
+    },
+    'loggers': {
+        # 'django': {
+        #     'handlers': ['console'],
+        #     'propagate': True,
+        # },
+        # 'django.server': {
+        #     'handlers': ['console'],
+        #     'level': 'INFO',
+        #     'propagate': False,
+        # },
+        'django.request': {
+            'handlers': ['file', 'sentry'],
+            'level': 'DEBUG',  # change debug level as appropiate
+            'propagate': False,
+        },
+        'debug-info-log': {
+            'handlers': ['debug-info'],
+            'level': 'DEBUG',
+            'propagate': False
+        }
+    }
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/home/menruimr/Anonymous-camp-project/server/server/static'

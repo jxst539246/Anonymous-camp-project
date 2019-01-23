@@ -33,12 +33,12 @@ class Sampler():
         self.G.load_state_dict(torch.load(check_point_path))
 
     def transform(self, image_str):
-        self.load_check_point('./final_models/G.th')
+        self.load_check_point('/home/menruimr/Anonymous-camp-project/server/server/final_models/G.th')
         img = base64_to_image(image_str)
         img = self.transformer(img)
         real_A = Variable(img.reshape(1, 3, 256, 256).type(self.Tensor))
         img_sample = self.G(real_A)
-        file_name = 'output/' + uuid.uuid4() + '.png'
+        file_name = 'output/' + str(uuid.uuid4()) + '.png'
         save_image(img_sample, file_name, normalize=True)
         return file_name
 
