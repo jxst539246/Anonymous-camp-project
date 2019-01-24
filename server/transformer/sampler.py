@@ -15,7 +15,7 @@ def base64_to_image(base64_str):
     base64_data = re.sub('^data:image/.+;base64,', '', base64_str)
     byte_data = base64.b64decode(base64_data)
     image_data = BytesIO(byte_data)
-    img = Image.open(image_data)
+    img = Image.open(image_data).convert('RGB')
     return img
 
 
@@ -32,16 +32,15 @@ class Sampler():
         self.Tensor = torch.cuda.FloatTensor if use_cuda else torch.Tensor
 
     def load_check_point(self, check_point_path):
-        #load data
+        # load data
         self.G.load_state_dict(torch.load(check_point_path))
         self.G.eval()
         for param in self.G.parameters():
             param.requires_grad = False
 
-
     def transform(self, image_str):
-        #transform
-        self.load_check_point('/home/menruimr/Anonymous-camp-project/server/server/final_models/G.th')
+        # transform
+        self.load_check_point('/home/menruimr/Anonymous-camp-project/server/server/final_models/2.0_G_AB_3.pth')
         img = base64_to_image(image_str)
         img = self.transformer(img)
         real_A = Variable(img.reshape(1, 3, 256, 256).type(self.Tensor))
