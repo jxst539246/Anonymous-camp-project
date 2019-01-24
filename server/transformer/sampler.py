@@ -11,6 +11,7 @@ import uuid
 
 
 def base64_to_image(base64_str):
+    # read image from a base64 str
     base64_data = re.sub('^data:image/.+;base64,', '', base64_str)
     byte_data = base64.b64decode(base64_data)
     image_data = BytesIO(byte_data)
@@ -20,6 +21,7 @@ def base64_to_image(base64_str):
 
 class Sampler():
     def __init__(self, use_cuda=True):
+        # init
         self.G = GeneratorResNet()
         if use_cuda:
             self.G = self.G.cuda()
@@ -30,9 +32,15 @@ class Sampler():
         self.Tensor = torch.cuda.FloatTensor if use_cuda else torch.Tensor
 
     def load_check_point(self, check_point_path):
+        #load data
         self.G.load_state_dict(torch.load(check_point_path))
+        self.G.eval()
+        for param in self.G.parameters():
+            param.requires_grad = False
+
 
     def transform(self, image_str):
+        #transform
         self.load_check_point('/home/menruimr/Anonymous-camp-project/server/server/final_models/G.th')
         img = base64_to_image(image_str)
         img = self.transformer(img)
