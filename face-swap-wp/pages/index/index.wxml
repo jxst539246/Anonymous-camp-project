@@ -1,0 +1,37 @@
+<!--index.wxml-->
+<view class="container">
+  <import src="../../we-cropper/we-cropper.wxml"/>
+
+  <view class="cropper-wrapper">
+    
+      <view hidden="{{imgReady ? true : false}}" id='img'>
+        <image src="{{imgurl}}" bindtap="uploadTap"></image>
+      </view>
+      <view hidden="{{imgReady ? false : true}}">
+        <template is="we-cropper" data="{{...cropperOpt}}"/>
+      </view>
+
+      <view style='margin-top: 20rpx'>
+        <view class='b'>
+          <image id='0' wx:if="{{style == 0}}" class='style' src='/assets/1.jpg' bindtap="setStyle"></image>
+          <image id='0' wx:else class='style1' src='/assets/1.jpg' bindtap="setStyle"></image>
+          <text class='style-text'>Cartoon</text>
+        </view>
+        <view class='b'>
+          <image id='1' wx:if="{{style == 1}}" class='style' src='/assets/van.jpg' bindtap="setStyle"></image>
+          <image id='1' wx:else class='style1' src='/assets/van.jpg' bindtap="setStyle"></image>
+          <text class='style-text'>Van Gogh</text>
+        </view>
+        <view class='b'>
+          <image id='2' wx:if="{{style == 2}}" class='style' src='/assets/picasso.jpg' bindtap="setStyle" style='margin-left: 10rpx'></image>
+          <image id='2' wx:else class='style1' src='/assets/picasso.jpg' bindtap="setStyle" style='margin-left: 10rpx'></image>
+          <text class='style-text'>Picasso</text>
+        </view> 
+      </view>
+
+      
+      <button bindtap="getCropperImage">Generate your stylistic picture！</button>
+      {{msg}}
+  </view>
+
+</view>
